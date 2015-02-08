@@ -9,3 +9,4 @@ Centers horizontally and vertically any image opened directly in your browser. Y
 
 # Download
 Center Image is available on openuserjs.org [Here](https://openuserjs.org/scripts/MrTimcakes/Center_Image)
+Center Image source is available on GitHub [Here](https://github.com/MrTimcakes/CenterImage)
