@@ -5,7 +5,7 @@
 // @version       1.0
 // @updateURL     https://openuserjs.org/install/MrTimcakes/Center_Image.user.js
 // @downloadURL   https://openuserjs.org/install/MrTimcakes/Center_Image.user.js
-// @homepage      https://openuserjs.org/scripts/MrTimcakes/Center_Image
+// @homepage      https://github.com/MrTimcakes/CenterImage
 // @description   Centers images with hotkeys
 // @run-at        document-start
 // @noframes
