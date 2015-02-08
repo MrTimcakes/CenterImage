@@ -1,5 +1,5 @@
 # CenterImage
-Centers horizontally and vertically any image opened directly in your browser. You can configure background color & which images to fit to window and which to leave in original size when opened.
+Centers images in both directions when opened directly in the browser. Background colour is configurable and you can ajust how images behave when both larger than the window and when smaller than the window. Their is also support for custom js to be ran which can be edited from the configuration window (Default hotykey p from any image).
 
 # Hotkeys
 * WASD \ arrows \ num4862 - scroll image to right\left\top\bottom accordingly

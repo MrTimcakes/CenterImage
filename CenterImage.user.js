@@ -6,7 +6,9 @@
 // @updateURL     https://openuserjs.org/install/MrTimcakes/Center_Image.user.js
 // @downloadURL   https://openuserjs.org/install/MrTimcakes/Center_Image.user.js
 // @homepage      https://github.com/MrTimcakes/CenterImage
-// @description   Centers images with hotkeys
+// @description   Centers images in both directions when opened directly in the browser.
+// @icon          https://raw.githubusercontent.com/MrTimcakes/CenterImage/master/Icon48.png
+// @icon64        https://raw.githubusercontent.com/MrTimcakes/CenterImage/master/Icon64.png
 // @run-at        document-start
 // @noframes
 // @grant         GM_getValue
