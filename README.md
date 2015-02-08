@@ -6,3 +6,6 @@ Centers horizontally and vertically any image opened directly in your browser. Y
 * Q \ num5 \ click on image - resize image from fullsize to original and vica versa
 * ctrl+space and ctrl+shift+space - simular to scroll of spacebar but horizontally
 * P \ menu item - open configuration page
+
+# Download
+Center Image is available on openuserjs.org [Here](https://openuserjs.org/scripts/MrTimcakes/Center_Image)
