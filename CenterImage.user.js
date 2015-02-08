@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name          Center Image
 // @namespace     CenterImage
-// @author        MrTimcakes / Ducky
+// @author        MrTimcakes AKA Ducky <Ducke.uk>
 // @version       1.0
 // @updateURL     https://openuserjs.org/install/MrTimcakes/Center_Image.user.js
 // @downloadURL   https://openuserjs.org/install/MrTimcakes/Center_Image.user.js
