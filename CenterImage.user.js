@@ -3,9 +3,9 @@
 // @namespace     CenterImage
 // @author        MrTimcakes / Ducky
 // @version       1.0
-// @updateURL     TODO
-// @downloadURL   TODO
-// @homepage      TODO
+// @updateURL     https://openuserjs.org/install/MrTimcakes/Center_Image.user.js
+// @downloadURL   https://openuserjs.org/install/MrTimcakes/Center_Image.user.js
+// @homepage      https://openuserjs.org/scripts/MrTimcakes/Center_Image
 // @description   Centers images with hotkeys
 // @run-at        document-start
 // @noframes
