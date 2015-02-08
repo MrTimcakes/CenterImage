@@ -1,7 +1,4 @@
 # CenterImage
-Userscript to center images
-
-# Summary
 Centers horizontally and vertically any image opened directly in your browser. You can configure background color & which images to fit to window and which to leave in original size when opened.
 
 # Hotkeys
