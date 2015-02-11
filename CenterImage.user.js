@@ -2,80 +2,44 @@
 // @name          Center Image
 // @namespace     CenterImage
 // @author        MrTimcakes AKA Ducky <Ducke.uk>
-// @version       1.2
+// @version       1.1
 // @updateURL     https://openuserjs.org/install/MrTimcakes/Center_Image.user.js
 // @downloadURL   https://openuserjs.org/install/MrTimcakes/Center_Image.user.js
 // @homepage      https://github.com/MrTimcakes/CenterImage
 // @description   Centers images in both directions when opened directly in the browser.
 // @icon          https://raw.githubusercontent.com/MrTimcakes/CenterImage/master/Icon48.png
 // @icon64        https://raw.githubusercontent.com/MrTimcakes/CenterImage/master/Icon64.png
+// @run-at        document-start
+// @noframes
 // @grant         GM_getValue
 // @grant         GM_setValue
 // @grant         GM_registerMenuCommand
-// @noframes
-// @run-at        document-start
-// @include       *
-// @include       file:///*
+// @match         http://*/*
+// @match         https://*/*
+// @match         file://*/*
+// @match         file:///*
 // ==/UserScript==
 
-function $(id) {return document.getElementById(id);}
-
-"undefined"!==typeof GM_registerMenuCommand&&GM_registerMenuCommand("Center Image Configuration",cfg,"c");
-
-function cfg(){
-	if(typeof GM_setValue !== "undefined")
-	{
-		function saveCfg()
-		{
-			GM_setValue("bgColor", $("bgColor").value);
-			GM_setValue("fitBoth", $("fitBoth").checked);
-			GM_setValue("fitEither", $("fitEither").checked);
-			GM_setValue("fitSmaller", $("fitSmaller").checked);
-			GM_setValue("js", $("customJs").value);
-			alert("Configuration Saved");
-			if($("bgColor").value){document.body.bgColor = $("bgColor").value;}else{document.body.removeAttribute("bgColor");}
-		}
-		if(img){img.removeEventListener("click", rescale, true);}
-		window.removeEventListener("keydown", onkeydown, true);
-		if(document.head){document.head.innerHTML = "";}
-		document.body.innerHTML = '<style>@import "http://fonts.googleapis.com/css?family=Raleway";body{background-color:#DDD}main{background-color:#64C8FA;border:1px solid #AAA;font-family:"Raleway",sans-serif;text-align:center;margin:0 auto;padding:0 50px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}#options{text-align:left}input{display:inline-block}p{margin-bottom:2.5px}label[for="customJs"]{display:block;text-align:center}textarea{display:block;margin:0 auto;margin-bottom:5px}#save{display:block;text-align:center;margin:0 auto;margin-bottom:5px}</style><main>\n<h1>Configuration</h1>\n<div id="options">\n<label for="bgColor">Background Color: </label><input id="bgColor" type="color" /><br>\n<p>Fit images to window if:</p>\n<input type="checkbox" id="fitBoth" /><label for="fitBoth">Larger than window in both width and height</label><br>\n<input type="checkbox" id="fitEither" /><label for="fitEither">Larger than window in width or height</label><br>\n<input type="checkbox" id="fitSmaller" /><label for="fitSmaller">Smaller than window</label><br>\n<label for="customJs">Custom javascript:</label>\n<textarea id="customJs" cols="45" rows="5"></textarea>\n<button id="save">Save Configuration</button>\n</div>\n</main>';
-      
-		$("bgColor").value = GM_getValue("bgColor", "");
-		$("fitBoth").checked = GM_getValue("fitBoth", true);
-		$("fitEither").checked = GM_getValue("fitEither", true);
-		$("fitSmaller").checked = GM_getValue("fitSmaller");
-		$("customJs").value = GM_getValue("js", "");
-		$("save").addEventListener("click", saveCfg, true);
-	}
-	else{
-		alert("Sorry, Chrome userscripts in native mode can't have configurations! Install TamperMonkey extension. (it's very good)");
-	}
-}
-
-var bgColor;
-var fitBoth = true;
-var fitEither = true;
-var fitSmaller;
-var customJs;
-if(typeof GM_getValue !== "undefined")
+if (typeof GM_registerMenuCommand !== "undefined")
 {
-	bgColor = GM_getValue("bgColor");
-	fitBoth = GM_getValue("fitBoth", true);
-	fitEither = GM_getValue("fitEither", true);
-	fitSmaller = GM_getValue("fitSmaller");
-	customJs = GM_getValue("js", "");
+	GM_registerMenuCommand("Center Image Configuration", cfg, "n");
 }
 
 var images = document.images;
-if(!images || images.length !== 1 || images[0].src !== location.href){return false;}
+if (!images || images.length !== 1 || images[0].src !== location.href) 
+{
+	return false;
+}
+
 var rescaled = false;
 var iot = 0, iol = 0;
 var img = images[0];
 
 function makeimage()
 {
-	if(bgColor){
-		document.body.bgColor = bgColor;
+	if(cfg_bgclr)
+	{
+		document.body.bgColor = cfg_bgclr;
 		if(document.head){document.head.innerHTML = "";} // remove FireFox background
 	}
 	document.body.innerHTML = "<style>img { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }</style>"; // center image
@@ -90,7 +54,8 @@ function makeimage()
 	autoresize();
 }
 
-function onresize(){
+function onresize()
+{
 	if(rescaled)
 	{
 		rescaled = false;
@@ -98,53 +63,69 @@ function onresize(){
 	}
 }
 
-function changecursor(){
+function changecursor()
+{
 	img.style.margin = "auto";
 	var root = document.compatMode=='BackCompat'? document.body : document.documentElement;
 	var CH = root.clientHeight;
 	if(CH == 0){CH = document.compatMode=='BackCompat'? document.documentElement.clientHeight : document.body.clientHeight;} // StupidFox
-	if(!rescaled && ((img.naturalHeight == CH) || (img.naturalWidth == root.clientWidth)) && ((CH == root.scrollHeight) && (root.clientWidth == root.scrollWidth)) ){
+	if(!rescaled && ((img.naturalHeight == CH) || (img.naturalWidth == root.clientWidth)) && ((CH == root.scrollHeight) && (root.clientWidth == root.scrollWidth)) ) // no scrollbars and one img dimension is equal to screen
+	{
 		img.style.cursor = "";
 	}
-	if((img.naturalHeight > CH) || (img.naturalWidth > root.clientWidth)){
-		if(rescaled){
+	else if((img.naturalHeight > CH) || (img.naturalWidth > root.clientWidth))
+	{
+		if(rescaled)
+		{
 			img.style.cursor = "-moz-zoom-in";
 			img.style.cursor = "-webkit-zoom-in";
 		}
-		else{
+		else
+		{
+			img.style.cursor = "-moz-zoom-out";
+			img.style.cursor = "-webkit-zoom-out";
+			if(img.naturalHeight > CH) // chrome bug fuuuuu
+			{
+				img.style.margin = "0px auto";
+			}
+		}
+	}
+	else
+	{
+		if(rescaled)
+		{
 			img.style.cursor = "-moz-zoom-out";
 			img.style.cursor = "-webkit-zoom-out";
 		}
-	}else{
-		if(rescaled){
-			img.style.cursor = "-moz-zoom-out";
-			img.style.cursor = "-webkit-zoom-out";
-		}
-		else{
+		else
+		{
 			img.style.cursor = "-moz-zoom-in";
 			img.style.cursor = "-webkit-zoom-in";
 		}
 	}
 }
 
-function onmousedown(event){
+function onmousedown(event)
+{
 	if(img.offsetLeft > 0){iol = img.offsetLeft;}
 	if(img.offsetTop > 0){iot = img.offsetTop;}
 }
 
-function rescale(event){
+function rescale(event)
+{
 	if(rescaled)
 	{
 		rescaled = false;
 		var scale;
 		if(event != 0)
 		{
-			if(typeof event.y === "undefined") // Firefox
+			if (typeof event.y === "undefined") // Firefox
 			{
 				ex = event.clientX;
 				ey = event.clientY;
 			}
-			else{
+			else
+			{
 				ex = event.x;
 				ey = event.y;
 			}
@@ -156,11 +137,13 @@ function rescale(event){
 		img.removeAttribute("width");
 		img.removeAttribute("height");
 		changecursor();
-		if(event != 0){
+		if(event != 0)
+		{
 			window.scrollTo(ex / scale - window.innerWidth / 2, ey / scale - window.innerHeight / 2);
 		}
 	}
-	else{
+	else
+	{
 		img.removeAttribute("width");
 		img.removeAttribute("height");
 		img.removeAttribute("style");
@@ -183,56 +166,73 @@ function rescale(event){
 	}
 }
 
-function autoresize(){
+function autoresize()
+{
 	if(img.naturalWidth != 0) // stupidfox
 	{
+		if(!document.head) // old fix for old chrome - let it be
+		{
+			document.lastChild.insertBefore(document.createElement("head"), document.body);
+		}
 		var link = document.createElement('link');
 		link.type = 'image/x-icon';
 		link.rel = 'shortcut icon';
 		link.href = img.src;
 		document.head.appendChild(link); // favicon
 		var title = img.src.substr(img.src.lastIndexOf("/")+1);
-		if(title.indexOf("?") != -1){
+		if(title.indexOf("?") != -1)
+		{
 			title = title.substr(0, title.indexOf("?"));
 		}
 		document.title = title + " (" + img.naturalWidth + "x" + img.naturalHeight + ")"; // title
 		
 		var root = document.compatMode=='BackCompat'? document.body : document.documentElement;
-		if(img.naturalHeight > root.clientHeight && img.naturalWidth > root.clientWidth){
+		if(img.naturalHeight > root.clientHeight && img.naturalWidth > root.clientWidth) // both scrollbars
+		{
 			rescaled = true;
-			if(!fitBoth){
+			if(!cfg_fitWH)
+			{
 				rescale(0);
 			}
-			else{
+			else
+			{
 				changecursor();
 			}
 		}
-		else if(img.naturalHeight > root.clientHeight || img.naturalWidth > root.clientWidth){
+		else if(img.naturalHeight > root.clientHeight || img.naturalWidth > root.clientWidth) // one scrollbar
+		{
 			rescaled = true;
-			if(!fitEither){
+			if(!cfg_fitB)
+			{
 				rescale(0);
 			}
-			else{
+			else
+			{
 				changecursor();
 			}
 		}
-		else{
-			if(fitSmaller){
+		else // no scrollbars
+		{
+			if(cfg_fitS)
+			{
 				rescale(0);
 			}
-			else{
+			else
+			{
 				changecursor();
 			}
 		}
-		if(customJs){eval(customJs);}
+		if(cfg_js){eval(cfg_js);}
 	}
-	else{
+	else
+	{
 		setTimeout(function() { autoresize(); }, 10);
 	}
 }
 
 // hotkeys
-if(typeof KeyEvent === "undefined"){
+if (typeof KeyEvent === "undefined")
+{
 	var KeyEvent = {
 		DOM_VK_SPACE: 32,
 		DOM_VK_LEFT: 37,
@@ -253,12 +253,15 @@ if(typeof KeyEvent === "undefined"){
 	};
 }
 
-function cancelEvent(a){
+function cancelEvent(a)
+{
 	a = a ? a : window.event;
-	if(a.stopPropagation){
+	if (a.stopPropagation)
+	{
 		a.stopPropagation();
 	}
-	if(a.preventDefault){
+	if (a.preventDefault)
+	{
 		a.preventDefault();
 	}
 	a.cancelBubble = true;
@@ -267,21 +270,24 @@ function cancelEvent(a){
 	return false;
 }
 
-function scroll_space(a, b){
+function scroll_space(a, b)
+{
 	var by = Math.round((b ? window.innerHeight : window.innerWidth) * 0.50 * (a ? -1 : 1));
 	if(!b)
 	{
 		window.scrollBy(0, by);
 	}
-	else{
+	else
+	{
 		window.scrollBy(by, 0);
 	}
 }
 
-function onkeydown(b){
+function onkeydown (b)
+{
 	var a = (window.event) ? b.keyCode : b.which;
 	
-	if(a != KeyEvent.DOM_VK_SPACE && (b.altKey || b.ctrlKey || b.metaKey))
+	if (a != KeyEvent.DOM_VK_SPACE && (b.altKey || b.ctrlKey || b.metaKey))
 	{
 		return;
 	}
@@ -324,6 +330,67 @@ function onkeydown(b){
 	case KeyEvent.DOM_VK_P:
 		cfg();
 		cancelEvent(b);
+	}
+}
+
+var cfg_bgclr;
+var cfg_fitWH = true;
+var cfg_fitB = true;
+var cfg_fitS;
+var cfg_js;
+if (typeof GM_getValue !== "undefined")
+{
+	cfg_bgclr = GM_getValue("bgColor");
+	cfg_fitWH = GM_getValue("fitWH", true);
+	cfg_fitB = GM_getValue("fitB", true);
+	cfg_fitS = GM_getValue("fitS");
+	cfg_js = GM_getValue("js");
+}
+
+function $(id) {return document.getElementById(id);} // for StupidFox
+
+function cfg()
+{
+	if (typeof GM_setValue !== "undefined")
+	{
+		function saveCfg()
+		{
+			GM_setValue("bgColor", $("ci_cfg_2_bgclr").value);
+			GM_setValue("fitWH", $("ci_cfg_3_fitWH").checked);
+			GM_setValue("fitB", $("ci_cfg_4_fitB").checked);
+			GM_setValue("fitS", $("ci_cfg_5_fitS").checked);
+			GM_setValue("js", $("ci_cfg_6_js").value);
+			alert("Configuration Saved");
+			if($("ci_cfg_2_bgclr").value){document.body.bgColor = $("ci_cfg_2_bgclr").value;}else{document.body.removeAttribute("bgColor");}
+		}
+		if(img){img.removeEventListener("click", rescale, true);}
+		window.removeEventListener("keydown", onkeydown, true);
+		if(document.head){document.head.innerHTML = "";}
+		document.body.innerHTML = "";
+		var div = document.createElement("div");
+		div.style.margin = "11% auto";
+		div.style.width = "444px";
+		div.style.border = "solid 1px black";
+		div.style.background = "silver";
+		div.innerHTML = "<b><center>Configuration</center></b>"
+		+ "<br><input id='ci_cfg_2_bgclr' type='text' size='6'> Background color (empty = default)"
+		+ "<br><br>Fit to window images:"
+		+ "<br><br><input id='ci_cfg_3_fitWH' type='checkbox'> Larger than window both vertically and horizontally"
+		+ "<br><br><input id='ci_cfg_4_fitB' type='checkbox'> Larger than window either vertically or horizontally"
+		+ "<br><br><input id='ci_cfg_5_fitS' type='checkbox'> Smaller than window"
+		+ "<br><br><center>Custom JS Action:<textarea id='ci_cfg_6_js' style='margin: 0px; width: 400px; height: 50px;'></textarea>"
+		+ "<br><input id='ci_cfg_save' type='button' value='Save configuration'></center>";
+		document.body.appendChild(div);
+		$("ci_cfg_2_bgclr").value = GM_getValue("bgColor", "");
+		$("ci_cfg_3_fitWH").checked = GM_getValue("fitWH", true);
+		$("ci_cfg_4_fitB").checked = GM_getValue("fitB", true);
+		$("ci_cfg_5_fitS").checked = GM_getValue("fitS");
+		$("ci_cfg_6_js").value = GM_getValue("js", "");
+		$("ci_cfg_save").addEventListener("click", saveCfg, true);
+	}
+	else
+	{
+		alert("Sorry, Chrome userscripts in native mode can't have configurations! Install TamperMonkey extension. (it's very good)");
 	}
 }
 	
