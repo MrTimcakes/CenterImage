@@ -2,7 +2,7 @@
 // @name          Center Image
 // @namespace     CenterImage
 // @author        MrTimcakes AKA Ducky <Ducke.uk>
-// @version       1.2
+// @version       2.0
 // @updateURL     https://openuserjs.org/install/MrTimcakes/Center_Image.user.js
 // @downloadURL   https://openuserjs.org/install/MrTimcakes/Center_Image.user.js
 // @homepage      https://github.com/MrTimcakes/CenterImage
